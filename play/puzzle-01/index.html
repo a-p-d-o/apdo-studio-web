@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <base href="/apdo-studio-web/play/puzzle-01/">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="같은 색끼리 모으는 정리 퍼즐. APDO STUDIO.">
+  <meta name="theme-color" content="#D6C3A8">
+
+  <!-- iOS -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="동글동글">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>동글동글 · APDO STUDIO</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* 로딩 중에도 빈 흰 화면을 보여주지 않는다. 배경색과 안내 문구를 미리 깐다. */
+    html, body { margin: 0; padding: 0; height: 100%; background: #FAFAFC; }
+    @media (prefers-color-scheme: dark) { html, body { background: #131417; } }
+    #boot {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+      color: #8A909B; font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="boot">불러오는 중…</div>
+  <script>
+    // Flutter가 첫 프레임을 그리면 안내 문구를 지운다.
+    window.addEventListener('flutter-first-frame', function () {
+      var b = document.getElementById('boot');
+      if (b) b.remove();
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

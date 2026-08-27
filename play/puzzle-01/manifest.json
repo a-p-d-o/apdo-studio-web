@@ -1,0 +1,35 @@
+{
+    "name": "동글동글 · APDO STUDIO",
+    "short_name": "동글동글",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#D6C3A8",
+    "theme_color": "#D6C3A8",
+    "description": "같은 친구끼리 모으는 정리 퍼즐.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
