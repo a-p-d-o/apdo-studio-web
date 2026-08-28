@@ -81648,7 +81648,7 @@ A.ail.prototype={
 $0(){return this.a.d=this.b},
 $S:0}
 A.ais.prototype={
-$2(a,b){var s=null,r=this.a,q=r.a.c.w,p=A.c([new A.yS("\uc774 \ube0c\ub77c\uc6b0\uc800\uc5d0 \uc7a0\uac00\uc11c(\uc554\ud638\ud654) \uc800\uc7a5\ud574\uc694. \uc2dc\ud06c\ub9bf\ucc3d\uc774\uac70\ub098 \ube0c\ub77c\uc6b0\uc800 \uae30\ub85d\xb7\uc0ac\uc774\ud2b8 \ub370\uc774\ud130\ub97c \uc9c0\uc6b0\uba74 \ud568\uaed8 \uc0ac\ub77c\uc9d1\ub2c8\ub2e4.","M1 \uc2dc\ud5d8\ud310 \xb7 2026-08-29",!1,s,"",s)],t.p)
+$2(a,b){var s=null,r=this.a,q=r.a.c.w,p=A.c([new A.yS("\uc774 \ube0c\ub77c\uc6b0\uc800\uc5d0 \uc7a0\uac00\uc11c(\uc554\ud638\ud654) \uc800\uc7a5\ud574\uc694. \uc2dc\ud06c\ub9bf\ucc3d\uc774\uac70\ub098 \ube0c\ub77c\uc6b0\uc800 \uae30\ub85d\xb7\uc0ac\uc774\ud2b8 \ub370\uc774\ud130\ub97c \uc9c0\uc6b0\uba74 \ud568\uaed8 \uc0ac\ub77c\uc9d1\ub2c8\ub2e4.","\uc2dc\ud5d8\ud310 \xb7 2026-08-29",!1,s,"",s)],t.p)
 if(q!=null)p.push(new A.yS("\uc9c0\uae08 \uc800\uc7a5\uc774 \uc548 \ub418\uace0 \uc788\uc5b4\uc694 \xb7 "+q,s,!0,r.a.c.gaiM(),"\ub2eb\uae30",s))
 p.push(A.lu(r.acU()))
 return A.arl(this.b.a,A.zU(!1,A.dN(p,B.av,B.L,B.aP),!0),new A.GS(B.Ha,r.d,r.ga5S(),s))},
