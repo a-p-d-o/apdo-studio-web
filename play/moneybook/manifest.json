@@ -1,11 +1,12 @@
 {
-    "name": "moneybook",
-    "short_name": "moneybook",
+    "name": "허니 가계부",
+    "short_name": "허니 가계부",
+    "lang": "ko",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "카드값 나가기 전에, 어느 통장에 얼마를 채워야 하는지 3분 만에.",
+    "background_color": "#FBF9F5",
+    "theme_color": "#FBF9F5",
+    "description": "오늘 쓴 돈을 3초에 적고, 이번 달이 버티는지 한 화면에서 확인하는 가계부",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
