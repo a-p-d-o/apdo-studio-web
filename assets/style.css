@@ -1,24 +1,32 @@
 /* APDO STUDIO 웹 공통 스타일
    빌드 도구 없음 — HTML/CSS만. 어디에든(정적 호스팅·nginx·S3) 그대로 올라간다. */
 
+/* 색은 apps/puzzle-01/DESIGN.md 의 토큰 그대로다. 새 색을 만들지 않았다.
+   (surface.bg / surface.panel / surface.tubeEdge / text.primary / text.secondary /
+    내용물 8색 중 '남색'의 칸 테두리값) */
 :root {
-  --bg: #ffffff;
-  --surface: #f6f7f9;
-  --border: #e3e6ea;
-  --text: #16191d;
-  --muted: #5b6470;
-  --accent: #3b5bdb;
+  --bg: #FBF6EC;        /* DESIGN.md surface.bg */
+  --surface: #FFFDF8;   /* DESIGN.md surface.panel */
+  --board: #D6C3A8;     /* DESIGN.md surface.board */
+  --tube: #F3EBDC;      /* DESIGN.md surface.tube */
+  --border: #D8CDB8;    /* surface.bg 와 surface.tubeEdge 사이 */
+  --text: #2A2118;      /* DESIGN.md text.primary */
+  --muted: #6B5B48;     /* DESIGN.md text.secondary */
+  --accent: #2646A6;    /* DESIGN.md 내용물 '남색'의 칸 테두리 */
+  --ink: #2A2118;
   --maxw: 44rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14161a;
-    --surface: #1c1f24;
-    --border: #2c3037;
-    --text: #e8eaed;
-    --muted: #9aa3af;
-    --accent: #8aa4ff;
+    --bg: #0F1117;
+    --surface: #1C2130;
+    --board: #2A3040;
+    --tube: #171A23;
+    --border: #333B4D;
+    --text: #F0EDE6;
+    --muted: #A29C93;
+    --accent: #5C7EE5;   /* DESIGN.md 다크 '남색' */
   }
 }
 

@@ -1,0 +1,158 @@
+/* APDO STUDIO 홈페이지 전용 스타일 — style.css 위에 얹는다.
+ *
+ * 왜 파일을 나눴나: style.css 는 개인정보처리방침·이용약관이 함께 쓰는 파일이다.
+ * 그 문서들은 다른 담당자가 고치는 중이므로, 새로 만드는 페이지의 부품은
+ * 이 파일에만 넣어 충돌 면적을 줄였다.
+ *
+ * 색은 하나도 새로 만들지 않았다. apps/puzzle-01/DESIGN.md 의 토큰뿐이다.
+ * 글꼴을 외부에서 받아오지 않는다 (ADR 0010). style.css 의 시스템 글꼴 스택을 그대로 쓴다.
+ */
+
+/* ── 키보드 조작 ───────────────────────────────────────────────
+   PC 사용자는 Tab 으로 훑는다. 초점이 어디 있는지 안 보이면 조작이 불가능하다. */
+a:focus-visible,
+summary:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  z-index: 10;
+}
+.skip:focus { left: 1rem; top: 1rem; }
+
+/* ── 머리말 줄 ─────────────────────────────────────────────── */
+header.site nav {
+  float: right;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+header.site nav a { color: var(--muted); text-decoration: none; margin-left: 1rem; }
+header.site nav a:hover,
+header.site nav a[aria-current="page"] { color: var(--text); text-decoration: underline; }
+header.site::after { content: ""; display: block; clear: both; }
+
+/* ── 판(board) — 게임의 작업대와 같은 면 ─────────────────────
+   ⚠️ 이 면 위에는 본문 링크와 보조 글자를 놓지 않는다.
+      실측 대비가 라이트에서 링크 4.87 / 보조 3.80 이라 본문 기준(4.5)에 못 미친다.
+      제목·버튼·친구 그림만 올린다. */
+.board {
+  background: var(--board);
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem;
+  margin: 0 0 2rem;
+  text-align: center;
+}
+.board h1 { margin: 0.75rem 0 0.25rem; }
+.board .tag { color: var(--ink, #2A2118); font-size: 0.9375rem; margin: 0; }
+@media (prefers-color-scheme: dark) { .board .tag { color: #F0EDE6; } }
+
+/* ── 여덟 친구 (SVG 인라인 · 이미지 파일 0개) ───────────────── */
+.friends { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+.friends svg { width: 44px; height: 44px; display: block; }
+
+/* ── 버튼 ──────────────────────────────────────────────────
+   여기 있는 것은 전부 다른 페이지로 가는 링크다.
+   눌러도 아무 일 없는 버튼은 이 사이트에 한 개도 없다 (사규 07 규칙 10). */
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.75rem 1.375rem;
+  border-radius: 999px;
+  margin: 1rem 0.25rem 0;
+  min-height: 44px;          /* 손가락으로 누를 수 있는 최소 크기 */
+  line-height: 1.5;
+}
+.btn:hover { filter: brightness(1.12); text-decoration: none; }
+.btn.ghost {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: calc(0.75rem - 2px) calc(1.375rem - 2px);
+}
+
+/* ── 카드 묶음 ─────────────────────────────────────────────── */
+.cards { display: grid; gap: 0.875rem; margin: 1.25rem 0; }
+@media (min-width: 40rem) { .cards.two { grid-template-columns: 1fr 1fr; } }
+.cards .card { margin: 0; height: 100%; }
+.cards .card a { font-weight: 600; }
+
+/* ── FAQ (details/summary — 키보드로 열고 닫힌다) ───────────── */
+.faq { border-top: 1px solid var(--border); margin: 1.25rem 0 0; }
+.faq details { border-bottom: 1px solid var(--border); }
+.faq summary {
+  cursor: pointer;
+  padding: 0.875rem 0.25rem;
+  font-weight: 700;
+  list-style: none;
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before {
+  content: "+";
+  color: var(--accent);
+  font-weight: 700;
+  width: 1rem;
+  flex: none;
+}
+.faq details[open] summary::before { content: "−"; }
+.faq details > *:not(summary) { margin: 0 0 0.875rem 1.625rem; }
+
+/* ── 아직 정해지지 않은 것 ─────────────────────────────────
+   비어 있는 자리를 그럴듯한 가짜로 채우지 않는다. 비었다고 적는다. */
+.pending {
+  background: var(--tube);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  color: var(--muted);
+  margin: 0.75rem 0;
+}
+
+/* ── 목록 ─────────────────────────────────────────────────── */
+ol.steps { padding-left: 1.375rem; }
+ol.steps > li { margin: 0.625rem 0; }
+
+.meta { color: var(--muted); font-size: 0.875rem; }
+
+/* ── 넓은 화면: 본문 폭을 조금 넓히고 여백을 준다 ───────────── */
+@media (min-width: 64rem) {
+  body { font-size: 17.5px; }
+  .board { padding: 2.5rem 2rem; }
+}
+
+/* ── 카드 안의 굵은 글씨 ─────────────────────────────────────
+   style.css 의 `.card strong { display:block }` 은 카드 제목용인데,
+   문장 중간의 <strong> 까지 줄바꿈시켜 "몇 수에 풀었는지 / 가 진짜 점수입니다"
+   처럼 문장을 두 동강 냈다. 렌더한 화면에서 발견한 것이다.
+   제목(첫 자식)만 블록으로 두고 나머지는 문장 안에 그대로 둔다. */
+.card strong { display: inline; margin-bottom: 0; }
+.card > strong:first-child { display: block; margin-bottom: 0.25rem; }
+
+/* ── 스크린샷 ─────────────────────────────────────────────
+   합성 목업(기기 프레임에 끼운 그림)을 쓰지 않는다. 실제로 찍은 화면만 올린다. */
+figure.shot { margin: 1.5rem 0 2rem; text-align: center; }
+figure.shot img {
+  max-width: 100%;
+  width: 260px;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+@media (min-width: 40rem) { figure.shot img { width: 300px; } }
+figure.shot figcaption { color: var(--muted); font-size: 0.8125rem; margin-top: 0.625rem; }
