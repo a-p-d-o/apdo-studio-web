@@ -1,11 +1,11 @@
 {
-    "name": "동글동글 · APDO STUDIO",
-    "short_name": "동글동글",
+    "name": "puzzle01",
+    "short_name": "puzzle01",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#FBF6EC",
-    "theme_color": "#FBF6EC",
-    "description": "같은 친구끼리 모으는 정리 퍼즐.",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

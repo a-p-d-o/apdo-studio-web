@@ -1,453 +1,60 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <base href="/apdo-studio-web/play/puzzle-01/">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="같은 색끼리 모으는 정리 퍼즐. APDO STUDIO.">
-
-  <!-- 브라우저 상단 막대 색. 로딩 화면 바탕(surface.bg)과 같은 값이어야
-       화면 위아래로 색이 튀지 않는다. DESIGN.md §3-1. -->
-  <meta name="theme-color" content="#FBF6EC" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0F1117" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#4F7CFF">
 
   <!-- iOS -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="동글동글">
+  <meta name="apple-mobile-web-app-title" content="정리 퍼즐">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <link rel="icon" type="image/png" href="favicon.png"/>
-  <title>동글동글 · APDO STUDIO</title>
+  <title>정리 퍼즐 · APDO STUDIO</title>
   <link rel="manifest" href="manifest.json">
 
-  <!--
-    ─────────────────────────────────────────────────────────────────────────
-    로딩 화면 (web-engineer, 2026-08-31)
-
-    왜 순수 HTML/CSS/SVG인가:
-      이 화면은 **Flutter가 뜨기 전에** 보인다. Dart 코드도, 이미지 파일도,
-      웹폰트도 쓸 수 없다 — 쓰면 그것부터 받느라 로딩 화면 자체가 늦어진다.
-
-    실측 (2026-08-31, 이 저장소의 릴리스 빌드):
-      · 로컬(무압축, 사실상 무제한 속도)  첫 화면까지 **0.67초**
-      · 400kB/s로 조인 회선(무압축)       첫 화면까지 **23.0초**, 8.87MB 내려받음
-      gzip을 켠 실제 호스팅이면 내려받는 양은 약 3.5MB다. 그래도 **몇 초는 걸린다.**
-      그 몇 초 동안 흰 화면을 보여주지 않기 위해 이 화면이 있다.
-
-    "한 번 받아두면 다음엔 빠릅니다" 는 왜 참인가 (아래 6초 안내 문구의 근거)
-      같은 브라우저·같은 400kB/s 회선에서 두 번째로 열면 **23.0초 → 1.5초**였다.
-      서비스워커 때문이 아니다 — 이 앱에는 **서비스워커가 없다.**
-      플러터가 내보내는 flutter_service_worker.js 는 SDK가 주는 '자기 자신을 해제하는'
-      묘비 파일이고, 우리는 그것을 **등록조차 하지 않는다**(load() 에 serviceWorkerSettings 없음).
-      빨라지는 것은 **브라우저의 평범한 HTTP 캐시** 덕이다.
-      같은 캐시로 완전 오프라인 새로고침도 열렸다(크로미움, 0.67초, 실패 요청 0건).
-      ⚠️ 단 이 값은 **로컬 서버·크로미움**에서 잰 것이다. GitHub Pages 의 캐시 헤더와
-         아이폰 사파리에서는 못 쟀다.
-
-    🔴 진행 표시에 대하여 — 가짜 진행바를 만들지 않았다
-      Flutter의 로더(flutter.js)는 **내려받은 바이트 수를 알려주지 않는다.**
-      확인한 것: `_flutter.loader.load()`가 주는 것은
-        onEntrypointLoaded (main.dart.js 도착) / 반환 Promise (엔진 준비 완료)
-        그리고 window 이벤트 flutter-first-frame (첫 화면) 뿐이다.
-      그래서 퍼센트 바는 **만들 수 없고, 만들면 거짓말이다.**
-      대신 **실제로 일어난 사건 3개**에만 반응하는 칸 3개를 둔다.
-      칸이 켜지는 시점은 전부 flutter_bootstrap.js 안의 진짜 콜백이다.
-      시간에 따라 저절로 차오르는 것은 이 화면에 하나도 없다.
-
-    색: DESIGN.md §3의 토큰만 쓴다. 새 색 0개. (lib/ui/theme.dart와 같은 값)
-    캐릭터: company/design/캐릭터-사양.md + lib/ui/tube_view.dart _FriendPainter
-            좌표를 그대로 옮겼다. 지어낸 좌표 0개.
-    ─────────────────────────────────────────────────────────────────────────
-  -->
   <style>
-    :root {
-      /* DESIGN.md §3-1 표면 */
-      --bg:        #FBF6EC;
-      --board:     #D6C3A8;
-      --tube-edge: #8F7A5E;
-      /* §3-2 글자 */
-      --text-1:    #2A2118;
-      --text-2:    #6B5B48;
-      /* §3-5 의미색 */
-      --warn:      #8A4A0A;
-      --heart:     #B23A2E;
-      /* §3-3 내용물 — 로딩 화면에 세우는 친구 셋의 색 */
-      --lemon:      #FFDA69;  --lemon-edge:   #9C8540;  /* 1 레몬 — 병아리 */
-      --magenta:    #DF1B8B;  --magenta-edge: #A71468;  /* 6 자주 — 토끼 */
-      --plum:       #843B9D;  --plum-edge:    #632C76;  /* 8 자두 — 곰 */
-      /* 캐릭터-사양.md §1 — 두 테마가 같은 값을 쓴다 */
-      --ink:       #2A2118;
-      --eye:       #F3EBDC;
-      /* §5-3 elev.board */
-      --shadow:    0 6px 20px rgba(90, 66, 38, 0.16);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:        #0F1117;
-        --board:     #2A3040;
-        --tube-edge: #5A6478;
-        --text-1:    #F0EDE6;
-        --text-2:    #A29C93;
-        --warn:      #FFB067;
-        --heart:     #FF8A78;
-        --lemon:      #FFE38D;  --lemon-edge:   #A6942F;
-        --magenta:    #EB5BAD;  --magenta-edge: #993B70;
-        --plum:       #A559C0;  --plum-edge:    #6B3A7C;
-        --shadow:    0 6px 20px rgba(0, 0, 0, 0.55);
-      }
-    }
-
-    html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); }
-
-    /* 웹폰트를 받지 않는다. 로딩 화면이 폰트를 기다리면 로딩 화면이 늦는다.
-       Pretendard는 Flutter가 뜬 뒤부터 적용된다. */
+    /* 로딩 중에도 빈 흰 화면을 보여주지 않는다. 배경색과 안내 문구를 미리 깐다. */
+    html, body { margin: 0; padding: 0; height: 100%; background: #FAFAFC; }
+    @media (prefers-color-scheme: dark) { html, body { background: #131417; } }
     #boot {
-      position: fixed; inset: 0; z-index: 9999;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 32px;
-      padding: 24px calc(24px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
-      box-sizing: border-box;
-      background: var(--bg);
-      color: var(--text-1);
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-                   "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-align: center;
-      transition: opacity 180ms ease-in-out;   /* DESIGN.md motion.fade */
-    }
-    #boot.gone { opacity: 0; pointer-events: none; }
-    /* 한국어는 낱말 중간에서 끊으면 읽기가 나빠진다. 실제로 "다음부/터는"으로 깨졌다. */
-    #boot p, #boot h1, #boot h2, #boot code { word-break: keep-all; overflow-wrap: anywhere; }
-
-    /* .loading 안의 세로 간격. DESIGN.md §5-1 (4의 배수) */
-    .loading { display: flex; flex-direction: column; align-items: center; gap: 32px; }
-
-    /* ── 친구 셋 ─────────────────────────────────────────── */
-    .friends { display: flex; align-items: flex-end; gap: 8px; margin-bottom: -38px; }
-    .friend  { width: 84px; height: 81px; display: block; overflow: visible; }
-    @media (max-height: 620px) {
-      .friend { width: 60px; height: 58px; }
-      .friends { margin-bottom: -28px; }
-      .loading { gap: 24px; }
-    }
-
-    /* 위아래로 살짝 흔들린다. 이것은 **진행 표시가 아니다** — 그냥 살아 있다는 표시다. */
-    .friend { animation: bob 1400ms ease-in-out infinite alternate; }
-    .friend:nth-child(2) { animation-delay: 180ms; }
-    .friend:nth-child(3) { animation-delay: 360ms; }
-    @keyframes bob { from { transform: translateY(0);  } to { transform: translateY(-7px); } }
-
-    .f-chick  { --body: var(--lemon);   --edge: var(--lemon-edge); }
-    .f-rabbit { --body: var(--magenta); --edge: var(--magenta-edge); }
-    .f-bear   { --body: var(--plum);    --edge: var(--plum-edge); }
-
-    /* 친구들이 서 있는 판(surface.board). DESIGN.md radius.board = 20 */
-    .board {
-      width: 264px; max-width: 80vw; height: 14px;
-      border-radius: 20px; background: var(--board);
-      box-shadow: var(--shadow);
-    }
-
-    /* ── 이름 ────────────────────────────────────────────── */
-    .word {
-      margin: 0; font-size: 44px; font-weight: 700;
-      letter-spacing: -1px; line-height: 1.05;      /* type.display */
-      color: var(--text-1);
-    }
-    .tagline {
-      margin: 8px 0 0; font-size: 13px; font-weight: 400;
-      letter-spacing: 0.2px; line-height: 1.3;      /* type.caption */
-      color: var(--text-2);
-    }
-
-    /* ── 진행 — 실제로 일어난 사건 3개에만 반응한다 ────────── */
-    .progress { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .segs { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
-    .segs li {
-      width: 32px; height: 6px; border-radius: 999px;   /* radius.chip */
-      background: var(--board);
-      transition: background-color 180ms ease-in-out;
-    }
-    .segs li.on   { background: var(--text-2); }
-    .segs li.now  { animation: breathe 1200ms ease-in-out infinite alternate; }
-    @keyframes breathe { from { opacity: 0.45; } to { opacity: 1; } }
-
-    .msg {
-      margin: 0; font-size: 16px; font-weight: 400; line-height: 1.45;  /* type.body */
-      color: var(--text-2); min-height: 24px;
-    }
-    .note {
-      margin: 0; max-width: 30ch;
-      font-size: 13px; line-height: 1.3; color: var(--warn);   /* type.caption */
-    }
-    .note[hidden] { display: none; }
-
-    /* ── 실패 ────────────────────────────────────────────── */
-    .fail { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .fail[hidden], .loading[hidden] { display: none; }
-    .fail h2 {
-      margin: 0; font-size: 22px; font-weight: 700;
-      letter-spacing: -0.3px; line-height: 1.2;     /* type.title */
-      color: var(--heart);
-    }
-    .fail p { margin: 0; max-width: 32ch; font-size: 16px; line-height: 1.45; color: var(--text-2); }
-    .fail code {
-      display: block; max-width: 32ch; word-break: break-word;
-      font-size: 13px; line-height: 1.3; color: var(--text-2); opacity: 0.8;
-    }
-    .btn {
-      appearance: none; -webkit-appearance: none;
-      margin-top: 4px; padding: 12px 24px;
-      border: none; border-radius: 14px;            /* radius.button */
-      background: var(--board); color: var(--text-1);
-      font: inherit; font-size: 14px; font-weight: 700; letter-spacing: 0.2px;
-      cursor: pointer; box-shadow: var(--shadow);
-    }
-    .btn:hover { filter: brightness(0.96); }
-    .btn:active { transform: translateY(1px); }
-    .btn:focus-visible { outline: 3px solid var(--tube-edge); outline-offset: 3px; }
-
-    /* 전정기관 접근성 — DESIGN.md §6 "disableAnimations면 모든 시간을 0으로" */
-    @media (prefers-reduced-motion: reduce) {
-      .friend, .segs li.now { animation: none; }
-      #boot { transition: none; }
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+      color: #8A909B; font-size: 15px;
     }
   </style>
 </head>
 <body>
-  <div id="boot" role="status" aria-live="polite">
-
-    <div class="loading" id="boot-loading">
-      <div class="friends">
-        <!-- 병아리 · 레몬 contents[0] — 캐릭터-사양.md §4-0 -->
-        <svg class="friend f-chick" viewBox="-1.45 -1.55 2.90 2.80" aria-hidden="true">
-          <g stroke-linejoin="round" stroke-linecap="round">
-            <path d="M-0.06 -0.72 Q 0.02 -1.15 0.26 -1.42 Q 0.22 -1.05 0.14 -0.72 Z"
-                  fill="var(--body)" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="0" cy="0" r="1" fill="var(--body)"/>
-            <circle cx="0" cy="0" r="0.94" fill="none" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="-0.68" cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="0.68"  cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="-0.40" cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="0.40"  cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="-0.47" cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <circle cx="0.33"  cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <path d="M-0.15 0.40 H 0.15 L 0 0.66 Z" fill="var(--edge)"/>
-          </g>
-        </svg>
-
-        <!-- 토끼 · 자주 contents[5] — 캐릭터-사양.md §4-5 -->
-        <svg class="friend f-rabbit" viewBox="-1.45 -1.55 2.90 2.80" aria-hidden="true">
-          <g stroke-linejoin="round" stroke-linecap="round">
-            <rect x="-0.47" y="-1.44" width="0.30" height="0.76" rx="0.15"
-                  fill="var(--body)" stroke="var(--edge)" stroke-width="0.12"/>
-            <rect x="0.17"  y="-1.44" width="0.30" height="0.76" rx="0.15"
-                  fill="var(--body)" stroke="var(--edge)" stroke-width="0.12"/>
-            <rect x="-0.39" y="-1.38" width="0.14" height="0.52" rx="0.07"
-                  fill="var(--edge)" opacity="0.28"/>
-            <rect x="0.25"  y="-1.38" width="0.14" height="0.52" rx="0.07"
-                  fill="var(--edge)" opacity="0.28"/>
-            <circle cx="0" cy="0" r="1" fill="var(--body)"/>
-            <circle cx="0" cy="0" r="0.94" fill="none" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="-0.68" cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="0.68"  cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="-0.40" cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="0.40"  cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="-0.47" cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <circle cx="0.33"  cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <path d="M-0.11 0.30 H 0.11 L 0 0.44 Z" fill="var(--edge)"/>
-            <path d="M0.17 0.56 A 0.17 0.14 0 0 1 -0.17 0.56"
-                  fill="none" stroke="var(--ink)" stroke-width="0.13"/>
-          </g>
-        </svg>
-
-        <!-- 곰 · 자두 contents[7] — 캐릭터-사양.md §4-7 -->
-        <svg class="friend f-bear" viewBox="-1.45 -1.55 2.90 2.80" aria-hidden="true">
-          <g stroke-linejoin="round" stroke-linecap="round">
-            <circle cx="-0.80" cy="-0.78" r="0.38" fill="var(--body)" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="0.80"  cy="-0.78" r="0.38" fill="var(--body)" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="-0.80" cy="-0.78" r="0.20" fill="var(--edge)" opacity="0.28"/>
-            <circle cx="0.80"  cy="-0.78" r="0.20" fill="var(--edge)" opacity="0.28"/>
-            <circle cx="0" cy="0" r="1" fill="var(--body)"/>
-            <circle cx="0" cy="0" r="0.94" fill="none" stroke="var(--edge)" stroke-width="0.12"/>
-            <circle cx="-0.68" cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="0.68"  cy="0.30" r="0.22" fill="var(--edge)" opacity="0.22"/>
-            <circle cx="-0.40" cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="0.40"  cy="0.06" r="0.20" fill="var(--ink)"/>
-            <circle cx="-0.47" cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <circle cx="0.33"  cy="-0.01" r="0.07" fill="var(--eye)"/>
-            <ellipse cx="0" cy="0.48" rx="0.40" ry="0.28" fill="var(--edge)" opacity="0.16"/>
-            <ellipse cx="0" cy="0.34" rx="0.16" ry="0.12" fill="var(--ink)"/>
-            <path d="M0.15 0.60 A 0.15 0.14 0 0 1 -0.15 0.60"
-                  fill="none" stroke="var(--ink)" stroke-width="0.13"/>
-          </g>
-        </svg>
-      </div>
-      <div class="board"></div>
-
-      <div>
-        <h1 class="word">동글동글</h1>
-        <p class="tagline">같은 친구끼리 모으는 정리 퍼즐</p>
-      </div>
-
-      <div class="progress">
-        <ol class="segs" id="boot-segs" aria-hidden="true"><li></li><li></li><li></li></ol>
-        <p class="msg" id="boot-msg">앱을 여는 중이에요</p>
-        <p class="note" id="boot-note" hidden></p>
-        <button type="button" class="btn" id="boot-slow-retry" hidden>다시 시도</button>
-      </div>
-    </div>
-
-    <div class="fail" id="boot-fail" hidden>
-      <h2 id="boot-why">열지 못했어요</h2>
-      <p>인터넷 연결을 확인하고 다시 시도해 주세요.</p>
-      <code id="boot-detail"></code>
-      <button type="button" class="btn" id="boot-retry">다시 시도</button>
-    </div>
-
-    <noscript>
-      <p class="msg">이 게임은 자바스크립트가 필요합니다. 브라우저 설정에서 켜 주세요.</p>
-    </noscript>
-  </div>
-
+  <div id="boot">불러오는 중…</div>
   <script>
-  /*
-    로딩 상태 기계. flutter_bootstrap.js 보다 **먼저** 정의되어야 한다.
-    바깥에 내보내는 것: window.__boot.step(n) / window.__boot.fail(why, detail)
-  */
-  (function () {
-    var boot    = document.getElementById('boot');
-    var loading = document.getElementById('boot-loading');
-    var failBox = document.getElementById('boot-fail');
-    var msgEl   = document.getElementById('boot-msg');
-    var noteEl  = document.getElementById('boot-note');
-    var whyEl   = document.getElementById('boot-why');
-    var detEl   = document.getElementById('boot-detail');
-    var segs    = Array.prototype.slice.call(document.querySelectorAll('#boot-segs > li'));
-    var slowBtn = document.getElementById('boot-slow-retry');
-    var retry   = document.getElementById('boot-retry');
-
-    // 이정표 n 을 지났을 때 보여줄 말. 전부 **이미 일어난 일**을 말한다.
-    var LABEL = [
-      '앱을 여는 중이에요',
-      '게임 파일을 받는 중이에요',
-      '그림을 준비하는 중이에요',
-      '첫 화면을 그리는 중이에요'
-    ];
-
-    var reached   = 0;            // 실제로 도달한 이정표 (0~3)
-    var lastMove  = Date.now();   // 마지막으로 이정표가 움직인 시각
-    var failing   = false;        // 실패 화면을 보여주는 중
-    var dismissed = false;        // 첫 화면이 떠서 이 화면을 치웠다
-    var timer     = null;
-
-    function paint() {
-      for (var i = 0; i < segs.length; i++) {
-        segs[i].className = i < reached ? 'on' : (i === reached ? 'now' : '');
-      }
-      msgEl.textContent = LABEL[Math.min(reached, LABEL.length - 1)];
-    }
-
-    function step(n) {
-      if (dismissed || n <= reached) return;
-      reached = n;
-      lastMove = Date.now();
-      // 감시견이 성급하게 "실패"라고 했는데 실제로는 진행 중이었다면 되돌린다.
-      // 멀쩡히 뜨는 앱 위에 실패 화면을 덮어두는 것이 이 화면이 할 수 있는 최악이다.
-      if (failing) {
-        failing = false;
-        failBox.hidden = true;
-        loading.hidden = false;
-        if (!timer) timer = setInterval(tick, 500);
-      }
-      noteEl.hidden = true;
-      slowBtn.hidden = true;
-      paint();
-    }
-
-    function fail(why, detail) {
-      if (dismissed || failing) return;
-      failing = true;
-      if (timer) { clearInterval(timer); timer = null; }
-      loading.hidden = true;
-      failBox.hidden = false;
-      whyEl.textContent = why || '열지 못했어요';
-      detEl.textContent = detail ? String(detail).slice(0, 200) : '';
-      try { retry.focus(); } catch (e) {}
-    }
-
-    // 첫 화면이 떴다. 실패 화면을 띄웠던 뒤라도 **무조건** 치운다.
-    function dismiss() {
-      if (dismissed) return;
-      dismissed = true;
-      failing = false;
-      if (timer) { clearInterval(timer); timer = null; }
-      boot.className = 'gone';
-      setTimeout(function () {
-        if (boot && boot.parentNode) boot.parentNode.removeChild(boot);
-      }, 200);   // motion.fade 180ms + 여유
-    }
-
-    // ── 감시견 ────────────────────────────────────────────
-    // 느린 망에서 몇 초씩 아무 변화가 없으면 사람은 앱이 죽은 줄 안다.
-    // 그래서 **말을 건다.** 다만 진행률을 지어내지는 않는다.
-    // 75초: 400kB/s 실측에서 가장 긴 구간(이정표 2→3)이 11.1초였다. 넉넉히 잡는다 —
-    // 성급한 실패 판정이 진짜 실패보다 나쁘다.
-    function tick() {
-      if (dismissed || failing) return;
-      var stuck = Date.now() - lastMove;
-
-      if (!navigator.onLine) {
-        noteEl.hidden = false;
-        noteEl.textContent = '인터넷 연결이 끊긴 것 같아요. 연결되면 이어서 받습니다.';
-        slowBtn.hidden = false;
-        return;
-      }
-      if (stuck > 75000) {
-        fail('너무 오래 걸려요',
-             '75초 동안 다음 단계로 넘어가지 못했습니다. (' + reached + '/3 단계)');
-      } else if (stuck > 15000) {
-        noteEl.hidden = false;
-        noteEl.textContent = '연결이 느린 것 같아요. 조금만 더 기다려 주세요.';
-        slowBtn.hidden = false;
-      } else if (stuck > 6000) {
-        noteEl.hidden = false;
-        noteEl.textContent = '처음 여는 중이라 조금 걸려요. 한 번 받아두면 다음엔 빠릅니다.';
+    // 🔴 이전 배포가 등록해 둔 서비스워커를 지운다.
+    //
+    // 왜 이게 있나: 투자자가 "지루하다"고 판정한 뒤 게임을 고쳤는데,
+    // 브라우저에 남아 있던 서비스워커가 옛 화면을 계속 보여줄 수 있었다.
+    // 새로고침을 해도 옛것이 뜨면 우리는 고친 것을 판정받지 못한다.
+    // 시험판 동안에는 캐시보다 "항상 최신"이 중요하다.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then(function (rs) { rs.forEach(function (r) { r.unregister(); }); })
+        .catch(function () {});
+      if (window.caches && caches.keys) {
+        caches.keys()
+          .then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); })
+          .catch(function () {});
       }
     }
-    timer = setInterval(tick, 500);
 
-    // ── 실패 감지 ─────────────────────────────────────────
-    // 스크립트를 못 받았을 때. 자원 오류는 버블링하지 않으므로 캡처 단계로 잡는다.
-    window.addEventListener('error', function (e) {
-      if (dismissed || failing) return;
-      var t = e && e.target;
-      if (t && t !== window && t.tagName === 'SCRIPT') {
-        fail('게임 파일을 받지 못했어요', (t.src || '') + ' 를 불러오지 못했습니다.');
-      }
-    }, true);
-
-    window.addEventListener('offline', function () {
-      if (dismissed || failing) return;
-      noteEl.hidden = false;
-      noteEl.textContent = '인터넷 연결이 끊겼어요. 연결되면 이어서 받습니다.';
-      slowBtn.hidden = false;
+    // Flutter가 첫 프레임을 그리면 안내 문구를 지운다.
+    window.addEventListener('flutter-first-frame', function () {
+      var b = document.getElementById('boot');
+      if (b) b.remove();
     });
-
-    window.addEventListener('flutter-first-frame', dismiss);
-
-    function reload() { window.location.reload(); }
-    retry.addEventListener('click', reload);
-    slowBtn.addEventListener('click', reload);
-
-    window.__boot = { step: step, fail: fail };
-    paint();
-  })();
   </script>
-  <script src="flutter_bootstrap.js" async
-          onerror="window.__boot &amp;&amp; window.__boot.fail('게임 파일을 받지 못했어요', 'flutter_bootstrap.js 를 불러오지 못했습니다.')"></script>
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
