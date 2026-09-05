@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <base href="/">
+  <base href="/apdo-studio-web/play/puzzle-01/">
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -32,23 +32,6 @@
 <body>
   <div id="boot">불러오는 중…</div>
   <script>
-    // 🔴 이전 배포가 등록해 둔 서비스워커를 지운다.
-    //
-    // 왜 이게 있나: 투자자가 "지루하다"고 판정한 뒤 게임을 고쳤는데,
-    // 브라우저에 남아 있던 서비스워커가 옛 화면을 계속 보여줄 수 있었다.
-    // 새로고침을 해도 옛것이 뜨면 우리는 고친 것을 판정받지 못한다.
-    // 시험판 동안에는 캐시보다 "항상 최신"이 중요하다.
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations()
-        .then(function (rs) { rs.forEach(function (r) { r.unregister(); }); })
-        .catch(function () {});
-      if (window.caches && caches.keys) {
-        caches.keys()
-          .then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); })
-          .catch(function () {});
-      }
-    }
-
     // Flutter가 첫 프레임을 그리면 안내 문구를 지운다.
     window.addEventListener('flutter-first-frame', function () {
       var b = document.getElementById('boot');
