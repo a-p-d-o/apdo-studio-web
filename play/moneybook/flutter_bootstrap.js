@@ -40,8 +40,19 @@ if (!window._flutter) {
 }
 _flutter.buildConfig = {"engineRevision":"a804b261645ef8c13eb3d5c44a5c2fb0340c5539","wasmHashes":{"wimp.wasm":"e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c","webparagraph/canvaskit.wasm":"0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254","skwasm.wasm":"e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1","chromium/canvaskit.wasm":"ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf","canvaskit.wasm":"fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3","skwasm_heavy.wasm":"565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635"},"builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}],"useLocalCanvasKit":true};
 
+// 🔴 2026-09-14 방침 「외부 요청 0」 — 엔진의 글꼴 대체 주소를 **자기 원점**으로 둔다.
+// 번들 글꼴(Pretendard)에 없는 글자(이모지 · ㈜ · 한자 …)를 그릴 때 엔진은 원래
+// `https://fonts.gstatic.com/s/` 에서 Noto 조각을 받는다(적기 시트 입력으로 실측 3건).
+// 이 경로에는 지금 파일이 없다 → 요청은 우리 원점 안에서 404 로 끝나고, 그 글자는 **네모도 안 그려진 빈칸**으로
+// 자리만 차지한다(2026-09-14 실측 — 엔진은 404 10번 뒤 이 세션의 글꼴 대체를 끈다).
+// CEO 결정(후보 2): 이 빈칸을 감수한다. Noto 를 여기 올리는 것(후보 1)은 투자자 허락 뒤.
+// 경로를 바꾸면 `ops/deploy/check-deploy.js` 가 이 줄을 읽어 404 를 분류한다 — 같이 본다.
+// Flutter 기본 템플릿(flutter_tools web/bootstrap.dart)과 다른 곳은 `config` 한 줄뿐이다.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "1463104200" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
-  }
+    serviceWorkerVersion: "1725196366" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
+  },
+  config: {
+    fontFallbackBaseUrl: "font-fallback/",
+  },
 });
