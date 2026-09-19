@@ -50,7 +50,7 @@ _flutter.buildConfig = {"engineRevision":"a804b261645ef8c13eb3d5c44a5c2fb0340c55
 // Flutter 기본 템플릿(flutter_tools web/bootstrap.dart)과 다른 곳은 `config` 한 줄뿐이다.
 _flutter.loader.load({
   serviceWorkerSettings: {
-    serviceWorkerVersion: "276656711" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
+    serviceWorkerVersion: "4087393702" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
   },
   config: {
     fontFallbackBaseUrl: "font-fallback/",
