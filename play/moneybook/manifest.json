@@ -6,7 +6,7 @@
     "display": "standalone",
     "background_color": "#F2EEE5",
     "theme_color": "#F2EEE5",
-    "description": "우리 하이브의 돈을 3초에 적고, 이번 달 빵꾸를 같이 막고, 벌집에 우리 기록이 쌓이는 가계부",
+    "description": "우리 하이브의 돈을 3초에 적고, 이번 달 모자란 돈을 같이 채우고, 벌집에 우리 기록이 쌓이는 가계부",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
