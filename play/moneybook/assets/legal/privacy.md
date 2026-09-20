@@ -390,7 +390,7 @@ APDO STUDIO(이하 "저희")가 만든 모바일 앱 **허니 가계부**(iOS·A
 | 경조사 장부가 상대방 이름을 저장함 | `lib/logic/models/gift.dart`의 `person` 필드 |
 | 자동 연동·문자 파싱·송금 없음 | `apps/moneybook/SCOPE.md` ‘만들지 않는다’ |
 | 블록체인 기록에서 나가는 것이 32바이트 하나 | `apps/moneybook/web/anchor.js`를 실제로 실행해 나간 요청을 전부 들여다보는 검사 `ops/scripts/gates/anchor_page_test.js`(G18-H) |
-| 블록체인 기록 페이지가 연결하는 주소가 2-5항의 10곳뿐 | `web/anchor.html`의 CSP · 게이트 G18-G가 잠금·CSP·코드·이 방침 넷을 대조 |
+| 블록체인 기록 페이지가 연결하는 주소가 2-5항의 8곳뿐 | `web/anchor.html`의 CSP · 게이트 G18-G가 잠금·CSP·코드·이 방침 넷을 대조 |
 | 앱은 여전히 인터넷에 닿지 않음 | 게이트 G18-A·B·E — `lib/`에 네트워크 코드 0건, 출시 매니페스트 `uses-permission` 0줄 |
 
 ### 2026-09-13에 더 확인한 것 (2-3항의 근거)
